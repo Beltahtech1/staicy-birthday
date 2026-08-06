@@ -600,7 +600,7 @@
       margin-bottom: 15px;
     }
 
-    /* Gift Boxes */
+    /* Gifts */
     .gift-section {
       text-align: center;
     }
@@ -736,7 +736,6 @@
       height: 5px !important;
     }
 
-    /* Confetti Canvas */
     #confetti-canvas {
       position: fixed;
       top: 0;
@@ -747,7 +746,6 @@
       z-index: 999;
     }
 
-    /* Romantic Modern Footer */
     footer {
       text-align: center;
       padding: 50px 20px;
@@ -773,7 +771,6 @@
       70% { transform: scale(1); }
     }
 
-    /* Responsive */
     @media (max-width: 600px) {
       .countdown-box {
         min-width: 70px;
@@ -793,7 +790,6 @@
       }
     }
 
-    /* Scroll animations */
     .reveal {
       opacity: 0;
       transform: translateY(40px);
@@ -808,13 +804,9 @@
 </head>
 <body>
 
-  <!-- Floating Particles -->
   <div id="particles"></div>
-
-  <!-- Confetti Canvas -->
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- Navigation -->
   <nav>
     <a href="#home">Home</a>
     <a href="#countdown">Countdown</a>
@@ -825,14 +817,12 @@
     <a href="#gifts">Gifts</a>
   </nav>
 
-  <!-- Hero -->
   <section class="hero" id="home">
     <h1>Happy Birthday<br>Staicy Njoroge!</h1>
     <p class="subtitle">To the most beautiful soul in my world</p>
     <img src="https://mcp-tools-z-image-turbo.hf.space/--replicas/p59pq/gradio_api/file=/tmp/gradio/6205d7da01fc2bcd0f49926379afcf15f45485ca07c636cff5be3f9dcf228894/image.webp" alt="Birthday celebration" class="hero-img">
   </section>
 
-  <!-- Countdown -->
   <section id="countdown">
     <h2 class="section-title reveal">The Countdown Begins</h2>
     <p class="section-subtitle reveal">Every second brings us closer to celebrating you</p>
@@ -856,7 +846,6 @@
     </div>
   </section>
 
-  <!-- Love Letter -->
   <section id="letter">
     <h2 class="section-title reveal">A Love Letter</h2>
     <p class="section-subtitle reveal">Words from the heart, typed one letter at a time</p>
@@ -866,7 +855,6 @@
     </div>
   </section>
 
-  <!-- Virtual Bouquet -->
   <section id="bouquet" class="bouquet-section">
     <h2 class="section-title reveal">Virtual Bouquet</h2>
     <p class="section-subtitle reveal">Send Staicy a beautiful bouquet of digital flowers</p>
@@ -908,7 +896,6 @@
     <div class="bouquet-display" id="bouquet-display"></div>
   </section>
 
-  <!-- Guestbook -->
   <section id="guestbook">
     <h2 class="section-title reveal">Guestbook of Wishes</h2>
     <p class="section-subtitle reveal">Leave a heartfelt message for Staicy</p>
@@ -960,7 +947,6 @@
     </div>
   </section>
 
-  <!-- Surprises -->
   <section id="surprises" class="surprise-section">
     <h2 class="section-title reveal">Hidden Surprises</h2>
     <p class="section-subtitle reveal">Pop the balloons to reveal special messages</p>
@@ -977,7 +963,6 @@
     </div>
   </section>
 
-  <!-- Gifts -->
   <section id="gifts" class="gift-section">
     <h2 class="section-title reveal">Special Gifts</h2>
     <p class="section-subtitle reveal">Click to unwrap your birthday surprises</p>
@@ -1005,13 +990,11 @@
     </div>
   </section>
 
-  <!-- Footer with Requested Credit Line -->
   <footer>
     <p>Developed with <span class="heart">❤️</span> by Beltah Tech, her boyfriend.</p>
     <p style="margin-top: 10px; font-size: 0.8rem; color: #6b7280;">Happy Birthday! May all your dreams come true 🌟</p>
   </footer>
 
-  <!-- Music Player -->
   <div class="music-player" id="music-player">
     <button class="music-btn" id="music-toggle">▶️</button>
     <div class="music-info">
@@ -1027,7 +1010,6 @@
   </div>
 
   <script>
-    // ==================== FLOATING PARTICLES ====================
     function createParticles() {
       const container = document.getElementById('particles');
       const emojis = ['🌸', '✨', '💫', '🌟', '💖', '🎈', '🌺', '💕'];
@@ -1046,7 +1028,6 @@
     }
     createParticles();
 
-    // ==================== COUNTDOWN TIMER ====================
     function updateCountdown() {
       const now = new Date();
       const currentYear = now.getFullYear();
@@ -1071,7 +1052,6 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // ==================== TYPEWRITER EFFECT ====================
     const loveLetter = `My dearest Staicy,
 
 On this special day, I want you to know just how incredibly amazing you are. Your kindness lights up every room, your laughter is the sweetest melody, and your heart is the most beautiful thing I've ever known.
@@ -1095,7 +1075,6 @@ Forever yours.`;
       }
     }
     
-    // Start typewriter when section is visible
     const letterObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && charIndex === 0) {
@@ -1106,7 +1085,6 @@ Forever yours.`;
     
     letterObserver.observe(document.getElementById('letter'));
 
-    // ==================== VIRTUAL BOUQUET ====================
     const selectedFlowers = new Set();
     
     document.querySelectorAll('.flower-option').forEach(option => {
@@ -1140,7 +1118,6 @@ Forever yours.`;
         }, index * 200);
       });
       
-      // Add a message
       setTimeout(() => {
         const msg = document.createElement('p');
         msg.style.cssText = 'width: 100%; text-align: center; color: var(--lavender-dark); font-family: Dancing Script; font-size: 1.3rem; margin-top: 15px; animation: fadeInUp 0.5s ease;';
@@ -1149,7 +1126,6 @@ Forever yours.`;
       }, selectedFlowers.size * 200 + 300);
     });
 
-    // ==================== GUESTBOOK ====================
     let selectedEmoji = '🎂';
     
     document.querySelectorAll('.emoji-btn').forEach(btn => {
@@ -1189,7 +1165,6 @@ Forever yours.`;
       textInput.value = '';
     });
 
-    // ==================== BALLOONS & SURPRISES ====================
     document.querySelectorAll('.balloon').forEach(balloon => {
       balloon.addEventListener('click', () => {
         if (!balloon.classList.contains('popped')) {
@@ -1203,7 +1178,6 @@ Forever yours.`;
       });
     });
 
-    // ==================== GIFT BOXES ====================
     document.querySelectorAll('.gift-box').forEach(box => {
       box.addEventListener('click', () => {
         if (!box.classList.contains('opened')) {
@@ -1214,7 +1188,6 @@ Forever yours.`;
       });
     });
 
-    // ==================== SCROLL ANIMATIONS ====================
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1225,7 +1198,6 @@ Forever yours.`;
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    // ==================== MUSIC TOGGLE ====================
     const musicToggle = document.getElementById('music-toggle');
     const musicWaves = document.getElementById('music-waves');
     let isPlaying = false;
