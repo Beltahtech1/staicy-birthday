@@ -126,8 +126,25 @@
     .intro p{color:#e7d5e7;line-height:1.7}
     .intro button{margin-top:22px;border:1px solid #ffffff55;background:#ffffff12;color:white;border-radius:99px;padding:14px 25px;backdrop-filter:blur(8px)}
     .intro button:hover{background:#ffffff24}
-    @media(max-width:700px){.nav-links{display:none}.site-nav{padding:14px 18px}.brand{font-size:1.8rem}.section{padding:78px 18px}.memory-grid{grid-template-columns:1fr;max-width:430px;margin:auto}.memory-card{min-height:270px}.bouquet-panel{grid-template-columns:1fr}.bouquet-stage{height:260px}.countdown-grid{gap:7px}.time-card{padding:16px 6px}.wish-form{flex-direction:column}.wish-form button{padding:14px}.portrait-wrap{width:135px;height:135px}}
+    @media(max-width:700px){.nav-links{display:none}.site-nav{padding:14px 18px}.brand{font-size:1.8rem}.section{padding:78px 18px}.memory-grid{grid-template-columns:1fr;max-width:430px;margin:auto}.memory-card{min-height:270px}.bouquet-panel{grid-template-columns:1fr}.bouquet-stage{height:300px}.countdown-grid{gap:7px}.time-card{padding:16px 6px}.wish-form{flex-direction:column}.wish-form button{padding:14px}.portrait-wrap{width:135px;height:135px}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+
+    /* A private two-person family tree: Staicy and her daughter Keisha */
+    .family-section{background:linear-gradient(145deg,#fff9f5,#f4e7ef 58%,#eee3ef)}
+    .family-tree{max-width:820px;margin:auto;padding:38px 22px 30px;border-radius:28px;background:#ffffffb8;border:1px solid #fff;box-shadow:var(--shadow);text-align:center}
+    .family-branch{display:flex;justify-content:center;align-items:flex-start;gap:clamp(18px,8vw,100px);position:relative;margin:0 auto;max-width:620px}
+    .family-branch:before{content:"";position:absolute;top:0;left:25%;right:25%;height:2px;background:linear-gradient(90deg,#d97891,#e7c58a);opacity:.8}
+    .family-person{position:relative;z-index:1;width:min(42%,220px);padding-top:27px}
+    .family-person:before{content:"";position:absolute;top:0;left:50%;height:27px;width:2px;background:#d5a6bb}
+    .family-avatar{width:112px;height:112px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#f8dce4,#e6d3e9);border:5px solid white;box-shadow:0 10px 30px #713b6220;font-size:2.7rem;overflow:hidden}
+    .family-avatar img{width:100%;height:100%;object-fit:cover}
+    .family-person h3{font:500 1.45rem 'Playfair Display',serif;color:var(--plum);margin:0 0 5px}
+    .family-role{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--wine)}
+    .family-date{font-size:.82rem;color:var(--muted);margin-top:8px}
+    .family-person a{display:inline-block;margin-top:12px;font-size:.8rem;color:var(--wine);text-decoration:underline;text-underline-offset:4px}
+    .family-note{max-width:500px;margin:30px auto 0;color:var(--muted);line-height:1.8;font-size:.9rem}
+    @media(max-width:520px){.family-tree{padding:30px 12px}.family-branch{gap:12px}.family-avatar{width:82px;height:82px;font-size:2.1rem}.family-person h3{font-size:1.2rem}.family-role{font-size:.62rem}.family-date{font-size:.72rem}}
+
   </style>
 </head>
 <body class="locked">
@@ -143,7 +160,7 @@
   <div id="sparkle-layer" aria-hidden="true"></div>
   <nav class="site-nav">
     <a class="brand" href="#home">Staicy</a>
-    <div class="nav-links"><a href="#memories">Memories</a><a href="#letter">A letter</a><a href="#surprise">Surprise</a><a href="#wishes">Wishes</a></div>
+    <div class="nav-links"><a href="#memories">Memories</a><a href="#family">Our family</a><a href="#letter">A letter</a><a href="#surprise">Surprise</a><a href="#wishes">Wishes</a></div>
     <button class="music-btn" id="music-toggle" type="button" disabled title="Add a music file in the site settings to enable music">♫ Music</button>
   </nav>
 
@@ -172,7 +189,7 @@
           <div class="time-card"><strong id="minutes">00</strong><span>Minutes</span></div>
           <div class="time-card"><strong id="seconds">00</strong><span>Seconds</span></div>
         </div>
-        <p id="countdown-message" aria-live="polite">Until August 15, 2027</p>
+        <p id="countdown-message" aria-live="polite">Until August 20, 2027</p>
       </div>
     </section>
 
@@ -184,7 +201,30 @@
           <article class="memory-card"><div class="memory-placeholder">✨</div><div class="memory-caption"><strong>Golden memories</strong><span>All the joy in between</span></div></article>
           <article class="memory-card"><div class="memory-placeholder">🌷</div><div class="memory-caption"><strong>Your brightest days</strong><span>More memories to come</span></div></article>
         </div>
-        <p class="memory-note">Personal photos can be added in the image settings near the top of the JavaScript.</p>
+        <p class="memory-note">Add your five photo links in the clearly marked image settings near the top of the JavaScript.</p>
+      </div>
+    </section>
+
+    <section class="section family-section" id="family">
+      <div class="section-inner">
+        <div class="section-head reveal"><div class="eyebrow">The family story</div><h2 class="serif">Two hearts, one family</h2><p>A little family tree celebrating just Staicy and her daughter, Keisha.</p></div>
+        <div class="family-tree reveal">
+          <div class="family-branch">
+            <article class="family-person">
+              <div class="family-avatar" aria-label="Staicy portrait"><span class="family-placeholder">🌷</span><img class="family-photo" id="family-staicy-photo" src="" alt="Staicy" hidden></div>
+              <h3>Staicy</h3>
+              <div class="family-role">Mother</div>
+              <div class="family-date">Born 20 August 2005</div>
+            </article>
+            <article class="family-person">
+              <div class="family-avatar" aria-label="Keisha portrait"><span class="family-placeholder">🌸</span><img class="family-photo" id="family-keisha-photo" src="" alt="Keisha" hidden></div>
+              <h3>Keisha</h3>
+              <div class="family-role">Daughter</div>
+              <a href="https://github.com/Beltahtech1/happy-birthday-keisha" target="_blank" rel="noopener noreferrer">Keisha's birthday website ↗</a>
+            </article>
+          </div>
+          <p class="family-note">A small branch, a lifetime of love. This family tree is intentionally just for Staicy and Keisha.</p>
+        </div>
       </div>
     </section>
 
@@ -203,10 +243,10 @@
 
     <section class="section" id="bouquet">
       <div class="section-inner">
-        <div class="section-head reveal"><div class="eyebrow">Picked just for you</div><h2 class="serif">A bouquet made with love</h2><p>Choose a few flowers and build a little arrangement for Staicy.</p></div>
+        <div class="section-head reveal"><div class="eyebrow">Picked just for you</div><h2 class="serif">A bouquet made with love</h2><p>Pick your favourite blooms and watch them gather into a hand-arranged bouquet for Staicy.</p></div>
         <div class="bouquet-panel reveal">
           <div><h3 class="serif" style="font-size:1.6rem;font-weight:500">Choose your flowers</h3><p style="color:var(--muted);line-height:1.7">Tap a flower to add it to the bouquet. There is no wrong combination.</p><div class="flower-controls"><button class="flower-btn" data-flower="🌹" aria-label="Add rose">🌹</button><button class="flower-btn" data-flower="🌷" aria-label="Add tulip">🌷</button><button class="flower-btn" data-flower="🌸" aria-label="Add blossom">🌸</button><button class="flower-btn" data-flower="🌻" aria-label="Add sunflower">🌻</button><button class="flower-btn" data-flower="💮" aria-label="Add flower">💮</button><button class="pill-btn" id="clear-bouquet" type="button">Clear</button></div></div>
-          <div class="bouquet-stage" id="bouquet-stage" aria-label="Your flower bouquet"><div class="bouquet-ribbon">🎀</div></div>
+          <div class="bouquet-stage" id="bouquet-stage" aria-label="Your flower bouquet"><div class="bouquet-paper"></div><div class="bouquet-stems"></div><div class="bouquet-ribbon">🎀</div><div class="bouquet-hint" id="bouquet-hint">Your bouquet will bloom here</div></div>
         </div>
       </div>
     </section>
@@ -237,10 +277,11 @@
   <script>
     /* PERSONALISE THESE SETTINGS BEFORE PUBLISHING */
     const SETTINGS = {
-      birthday: '2027-08-15T00:00:00',
-      portrait: '', // Add a photo URL, e.g. './images/staicy.jpg'
-      memories: ['', '', ''], // Add three photo URLs, e.g. './images/memory-1.jpg'
-      music: '' // Add a licensed MP3 URL, e.g. './music/birthday-song.mp3'
+      birthday: '2027-08-20T00:00:00',
+      portrait: '', // PHOTO 1: Staicy's main portrait (also used in her family-tree circle)
+      memories: ['', '', ''], // PHOTOS 2–4: add three gallery image URLs
+      familyKeisha: '', // PHOTO 5: add Keisha's family-tree portrait URL
+      music: '' // Optional licensed MP3 URL, e.g. './music/birthday-song.mp3'
     };
 
     const $ = (selector) => document.querySelector(selector);
@@ -280,6 +321,14 @@
       $('#portrait').src = SETTINGS.portrait;
       $('#portrait').hidden = false;
       $('#portrait-placeholder').hidden = true;
+      $('#family-staicy-photo').src = SETTINGS.portrait;
+      $('#family-staicy-photo').hidden = false;
+      $('#family-staicy-photo').previousElementSibling.hidden = true;
+    }
+    if (SETTINGS.familyKeisha) {
+      $('#family-keisha-photo').src = SETTINGS.familyKeisha;
+      $('#family-keisha-photo').hidden = false;
+      $('#family-keisha-photo').previousElementSibling.hidden = true;
     }
     document.querySelectorAll('.memory-card').forEach((card, index) => {
       if (!SETTINGS.memories[index]) return;
@@ -302,28 +351,65 @@
     }, {threshold: 0.12});
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    // Build a bouquet with a small, natural stagger.
+    // Arrange illustrated blooms with layered petals, stems and leaves.
     const stage = $('#bouquet-stage');
+    const bouquet = stage;
     let flowerCount = 0;
+    const flowerPalette = {
+      '🌹': ['#c83f62','#f6a0ae','#52785e'],
+      '🌷': ['#db6688','#ffd0db','#66886a'],
+      '🌸': ['#e99ab7','#ffe0eb','#6f916e'],
+      '🌻': ['#e7a92e','#ffe58b','#66865b'],
+      '💮': ['#b68acb','#ead8f5','#66886a']
+    };
+    function createBloom(symbol, index) {
+      const [color, light, leaf] = flowerPalette[symbol] || flowerPalette['🌸'];
+      const bloom = document.createElement('div');
+      bloom.className = 'flower';
+      bloom.setAttribute('aria-label', 'Flower in bouquet');
+      const positions = [
+        {x:50,b:128,r:0,s:1.04},{x:34,b:115,r:-17,s:.92},{x:66,b:115,r:17,s:.92},
+        {x:22,b:94,r:-25,s:.82},{x:78,b:94,r:25,s:.82},{x:42,b:145,r:-8,s:.9},{x:58,b:145,r:8,s:.9},
+        {x:13,b:86,r:-28,s:.76},{x:87,b:86,r:28,s:.76}
+      ];
+      const p = positions[index % positions.length];
+      bloom.style.left = p.x + '%';
+      bloom.style.bottom = p.b + 'px';
+      bloom.style.setProperty('--rot', p.r + 'deg');
+      bloom.style.transform = 'translateX(-50%) scale(' + p.s + ')';
+      bloom.style.setProperty('--bloom', color);
+      bloom.style.setProperty('--leaf', leaf);
+      bloom.style.setProperty('--petal-light', light);
+      const stem = document.createElement('span');
+      stem.className = 'flower-stem';
+      stem.style.setProperty('--stem-rot', (-p.r * .55) + 'deg');
+      const head = document.createElement('span');
+      head.className = 'flower-head';
+      for (let i = 0; i < 8; i++) {
+        const petal = document.createElement('i');
+        petal.className = 'petal';
+        petal.style.setProperty('--angle', (i * 45) + 'deg');
+        head.appendChild(petal);
+      }
+      const center = document.createElement('i');
+      center.className = 'flower-center';
+      head.appendChild(center);
+      bloom.append(stem, head);
+      return bloom;
+    }
     document.querySelectorAll('[data-flower]').forEach(button => {
       button.addEventListener('click', () => {
-        if (flowerCount >= 18) return;
-        const flower = document.createElement('span');
-        flower.className = 'flower';
-        flower.textContent = button.dataset.flower;
-        const x = 22 + Math.random() * 56;
-        const y = 75 + Math.random() * 95;
-        flower.style.left = x + '%';
-        flower.style.bottom = y + 'px';
-        flower.style.setProperty('--rot', (-24 + Math.random() * 48) + 'deg');
-        flower.style.animationDelay = (Math.random() * .12) + 's';
-        stage.appendChild(flower);
+        if (flowerCount >= 9) return;
+        $('#bouquet-hint').hidden = true;
+        bouquet.insertBefore(createBloom(button.dataset.flower, flowerCount), $('.bouquet-ribbon'));
         flowerCount++;
+        burst(window.innerWidth / 2, window.innerHeight * .58, 3);
       });
     });
     $('#clear-bouquet').addEventListener('click', () => {
       stage.querySelectorAll('.flower').forEach(flower => flower.remove());
       flowerCount = 0;
+      $('#bouquet-hint').hidden = false;
     });
 
     // Gift reveal and lightweight canvas-free sparkle burst.
