@@ -201,7 +201,7 @@
           <article class="memory-card"><div class="memory-placeholder">✨</div><div class="memory-caption"><strong>Golden memories</strong><span>All the joy in between</span></div></article>
           <article class="memory-card"><div class="memory-placeholder">🌷</div><div class="memory-caption"><strong>Your brightest days</strong><span>More memories to come</span></div></article>
         </div>
-        <p class="memory-note">Personal photos can be added in the image settings near the top of the JavaScript.</p>
+        <p class="memory-note">Add your five photo links in the clearly marked image settings near the top of the JavaScript.</p>
       </div>
     </section>
 
@@ -211,13 +211,13 @@
         <div class="family-tree reveal">
           <div class="family-branch">
             <article class="family-person">
-              <div class="family-avatar" aria-label="Staicy portrait">🌷</div>
+              <div class="family-avatar" aria-label="Staicy portrait"><span class="family-placeholder">🌷</span><img class="family-photo" id="family-staicy-photo" src="" alt="Staicy" hidden></div>
               <h3>Staicy</h3>
               <div class="family-role">Mother</div>
               <div class="family-date">Born 20 August 2005</div>
             </article>
             <article class="family-person">
-              <div class="family-avatar" aria-label="Keisha portrait">🌸</div>
+              <div class="family-avatar" aria-label="Keisha portrait"><span class="family-placeholder">🌸</span><img class="family-photo" id="family-keisha-photo" src="" alt="Keisha" hidden></div>
               <h3>Keisha</h3>
               <div class="family-role">Daughter</div>
               <a href="https://github.com/Beltahtech1/happy-birthday-keisha" target="_blank" rel="noopener noreferrer">Keisha's birthday website ↗</a>
@@ -279,8 +279,9 @@
     const SETTINGS = {
       birthday: '2027-08-20T00:00:00',
       portrait: '', // Add a photo URL, e.g. './images/staicy.jpg'
-      memories: ['', '', ''], // Add three photo URLs, e.g. './images/memory-1.jpg'
-      music: '' // Add a licensed MP3 URL, e.g. './music/birthday-song.mp3'
+      memories: ['', '', ''], // PHOTOS 2–4: add three gallery image URLs
+      familyKeisha: '', // PHOTO 5: add Keisha's family-tree portrait URL
+      music: '' // Optional licensed MP3 URL, e.g. './music/birthday-song.mp3'
     };
 
     const $ = (selector) => document.querySelector(selector);
@@ -320,6 +321,14 @@
       $('#portrait').src = SETTINGS.portrait;
       $('#portrait').hidden = false;
       $('#portrait-placeholder').hidden = true;
+      $('#family-staicy-photo').src = SETTINGS.portrait;
+      $('#family-staicy-photo').hidden = false;
+      $('#family-staicy-photo').previousElementSibling.hidden = true;
+    }
+    if (SETTINGS.familyKeisha) {
+      $('#family-keisha-photo').src = SETTINGS.familyKeisha;
+      $('#family-keisha-photo').hidden = false;
+      $('#family-keisha-photo').previousElementSibling.hidden = true;
     }
     document.querySelectorAll('.memory-card').forEach((card, index) => {
       if (!SETTINGS.memories[index]) return;
