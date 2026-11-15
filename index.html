@@ -1,616 +1,412 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy 21st Birthday, Staicy! 💕</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-  :root{
-    --blush:#FFD9E8;
-    --rose:#E85D8A;
-    --rose-deep:#C2447A;
-    --plum:#4A1942;
-    --plum-soft:#6E2C63;
-    --gold:#F0C468;
-    --cream:#FFF8F3;
-  }
-
-  *{ box-sizing:border-box; }
-
-  body{
-    font-family:'Plus Jakarta Sans', sans-serif;
-    background:var(--cream);
-    color:var(--plum);
-    overflow-x:hidden;
-  }
-
-  .font-display{ font-family:'Fraunces', serif; }
-  .font-script{ font-family:'Dancing Script', cursive; }
-
-  /* ---------- Glass card ---------- */
-  .glass-card{
-    background:rgba(255,255,255,0.55);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,0.7);
-    box-shadow:0 8px 32px rgba(74,25,66,0.08);
-  }
-
-  /* ---------- Intro overlay ---------- */
-  #intro-overlay{
-    position:fixed; inset:0; z-index:100;
-    background:radial-gradient(circle at 50% 30%, var(--plum-soft) 0%, var(--plum) 70%);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    cursor:pointer; overflow:hidden;
-    transition:opacity 0.9s ease, visibility 0.9s ease;
-  }
-  #intro-overlay.hide{
-    opacity:0; visibility:hidden; pointer-events:none;
-  }
-  .intro-sparkle{
-    position:absolute; color:var(--gold); opacity:0.5; animation:twinkle 2.4s infinite ease-in-out;
-  }
-  @keyframes twinkle{
-    0%,100%{ opacity:0.15; transform:scale(0.8);}
-    50%{ opacity:0.8; transform:scale(1.15);}
-  }
-  #bow{
-    font-size:4.5rem;
-    transform-origin:60% 50%;
-    transition:transform 0.35s cubic-bezier(.34,1.56,.64,1);
-    filter:drop-shadow(0 6px 14px rgba(0,0,0,0.35));
-  }
-  #intro-overlay.drawn #bow{ transform:rotate(-18deg) scale(1.08); }
-
-  #target-heart{
-    font-size:5rem;
-    filter:drop-shadow(0 6px 14px rgba(0,0,0,0.35));
-    transition:transform 0.25s ease, opacity 0.25s ease;
-  }
-  #target-heart.pulse{ animation:heartPulse 1s infinite ease-in-out; }
-  @keyframes heartPulse{
-    0%,100%{ transform:scale(1); }
-    50%{ transform:scale(1.12); }
-  }
-  #target-heart.hit{ animation:heartPop 0.35s ease forwards; }
-  @keyframes heartPop{
-    0%{ transform:scale(1); }
-    40%{ transform:scale(1.5); }
-    100%{ transform:scale(0); opacity:0; }
-  }
-
-  #flying-arrow{
-    position:absolute; font-size:2.2rem; opacity:0;
-    transform:translateX(0) rotate(90deg);
-  }
-  #flying-arrow.fly{
-    animation:arrowFly 0.5s cubic-bezier(.55,0,.85,.35) forwards;
-  }
-  @keyframes arrowFly{
-    0%{ opacity:1; transform:translateX(0) rotate(90deg); }
-    90%{ opacity:1; }
-    100%{ opacity:0; transform:translateX(var(--fly-distance,220px)) rotate(90deg); }
-  }
-
-  .ribbon{
-    position:absolute; width:8px; border-radius:4px; opacity:0;
-    animation:ribbonBurst 1.3s ease-out forwards;
-  }
-  @keyframes ribbonBurst{
-    0%{ opacity:1; transform:translate(0,0) rotate(0deg) scaleY(1);}
-    100%{ opacity:0; transform:translate(var(--rx), var(--ry)) rotate(var(--rr)) scaleY(1.6);}
-  }
-
-  #tap-hint{
-    color:var(--blush); letter-spacing:0.08em;
-    animation:fadeUpDown 1.8s infinite ease-in-out;
-  }
-  @keyframes fadeUpDown{
-    0%,100%{ opacity:0.55; transform:translateY(0); }
-    50%{ opacity:1; transform:translateY(-4px); }
-  }
-
-  /* ---------- Scroll reveal ---------- */
-  .reveal{
-    opacity:0; transform:translateY(28px);
-    transition:opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.in-view{
-    opacity:1; transform:translateY(0);
-  }
-
-  /* ---------- Floating balloons ---------- */
-  .balloon{
-    position:absolute; bottom:-120px; opacity:0.6;
-    border-radius:50% 50% 50% 50% / 42% 42% 58% 58%;
-    animation:float 16s infinite ease-in; z-index:0;
-  }
-  @keyframes float{
-    0%{ transform:translateY(0) rotate(0deg); opacity:0.7; }
-    100%{ transform:translateY(-125vh) rotate(25deg); opacity:0; }
-  }
-
-  /* ---------- Buttons / hovers ---------- */
-  .glow-hover{ transition:all 0.3s cubic-bezier(.4,0,.2,1); }
-  .glow-hover:hover{ box-shadow:0 0 26px rgba(232,93,138,0.55); transform:translateY(-3px); }
-
-  /* ---------- Photo frame ---------- */
-  .photo-frame{
-    position:relative; width:220px; height:220px; border-radius:9999px;
-    padding:6px; background:linear-gradient(135deg,var(--gold),var(--rose),var(--plum-soft));
-    box-shadow:0 12px 30px rgba(74,25,66,0.25);
-    animation:framePulse 4s infinite ease-in-out;
-  }
-  @keyframes framePulse{
-    0%,100%{ transform:scale(1); }
-    50%{ transform:scale(1.02); }
-  }
-  .photo-frame img{
-    width:100%; height:100%; object-fit:cover; border-radius:9999px;
-    border:4px solid var(--cream);
-  }
-
-  /* ---------- Gift box ---------- */
-  .gift-box{ transition:transform 0.3s ease; cursor:pointer; }
-  .gift-box:hover{ transform:scale(1.06) rotate(2deg); }
-  .lid-open{ animation:openLid 0.7s forwards ease-in-out; }
-  @keyframes openLid{
-    0%{ transform:translateY(0) rotate(0); }
-    50%{ transform:translateY(-40px) rotate(-15deg); }
-    100%{ transform:translateY(-100px); opacity:0; }
-  }
-
-  .floating-emoji{
-    position:fixed; font-size:1.8rem; animation:rise 2.4s ease-out forwards;
-    pointer-events:none; z-index:60;
-  }
-  @keyframes rise{
-    0%{ transform:translateY(0) scale(0.5); opacity:1; }
-    100%{ transform:translateY(-130px) scale(1.4); opacity:0; }
-  }
-
-  ::-webkit-scrollbar{ width:8px; }
-  ::-webkit-scrollbar-thumb{ background:var(--rose); border-radius:8px; }
-
-  #music-toggle{ transition:transform 0.3s ease; }
-  #music-toggle.spin{ animation:spin 3s linear infinite; }
-  @keyframes spin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#24152f">
+  <meta name="description" content="A little birthday universe made with love for Staicy.">
+  <title>For Staicy — A Birthday to Remember</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#25172e;--plum:#3d2448;--wine:#713b62;--rose:#d97891;--pink:#f4c6d1;--gold:#e7c58a;--cream:#fff9f5;--muted:#796c7d;--glass:rgba(255,250,248,.76);--shadow:0 24px 80px rgba(45,24,48,.13)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:90px}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+    body.locked{overflow:hidden}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    .serif{font-family:'Playfair Display',serif}.script{font-family:'Great Vibes',cursive}
+    .eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--wine)}
+    .site-nav{position:fixed;z-index:30;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:17px clamp(18px,5vw,72px);background:rgba(255,249,245,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(113,59,98,.09)}
+    .brand{font-family:'Great Vibes',cursive;font-size:2rem;color:var(--wine)}
+    .nav-links{display:flex;gap:26px;align-items:center;font-size:.83rem;color:#66566b}
+    .nav-links a:hover{color:var(--rose)}
+    .music-btn,.pill-btn{border:1px solid rgba(113,59,98,.16);border-radius:99px;padding:10px 15px;background:#fffaf8;color:var(--wine);transition:.25s}
+    .music-btn:hover,.pill-btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px #713b6220}
+    .music-btn[disabled]{opacity:.45;cursor:not-allowed}
+    .hero{min-height:100svh;position:relative;display:grid;place-items:center;text-align:center;overflow:hidden;padding:130px 22px 80px;background:radial-gradient(ellipse at 50% 25%,#fff 0%,#fff5f3 38%,#f6e5ed 72%,#e9dce9 100%)}
+    .hero:before,.hero:after{content:"";position:absolute;border:1px solid #fff9;border-radius:50%;width:min(78vw,850px);aspect-ratio:1;pointer-events:none}
+    .hero:after{width:min(92vw,1080px);opacity:.55}
+    .hero-content{position:relative;z-index:2;max-width:850px}
+    .hero-kicker{display:inline-flex;gap:9px;align-items:center;border:1px solid #d9789140;background:#fff9;padding:9px 16px;border-radius:99px;color:var(--wine);font-size:.78rem;letter-spacing:.08em}
+    .hero h1{font-size:clamp(3.2rem,9vw,7.7rem);line-height:.99;letter-spacing:-.055em;margin:26px 0 18px;color:var(--plum);font-weight:500}
+    .hero h1 em{font-weight:500;color:var(--wine)}
+    .hero-copy{max-width:570px;margin:0 auto;color:#756779;font-size:clamp(1rem,2vw,1.12rem);line-height:1.85}
+    .portrait-wrap{width:156px;height:156px;margin:34px auto 22px;border-radius:50%;padding:5px;background:conic-gradient(from 30deg,var(--gold),var(--rose),#fff,var(--wine),var(--gold));box-shadow:0 15px 45px #713b6230;animation:portraitFloat 6s ease-in-out infinite}
+    .portrait-inner{width:100%;height:100%;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#f9dce3,#e9cbdc 55%,#d8bfd9);border:4px solid #fff;overflow:hidden}
+    .portrait-inner img{width:100%;height:100%;object-fit:cover}
+    .portrait-placeholder{font-size:3.7rem;filter:drop-shadow(0 7px 8px #713b6230)}
+    @keyframes portraitFloat{50%{transform:translateY(-8px)}}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+    .primary-btn{border:0;border-radius:99px;padding:14px 23px;background:linear-gradient(110deg,#9a557b,#6b3b69);color:white;box-shadow:0 12px 26px #713b6238;transition:.25s}
+    .primary-btn:hover{transform:translateY(-3px);box-shadow:0 17px 32px #713b6248}
+    .secondary-btn{border:1px solid #8d647f45;border-radius:99px;padding:13px 22px;background:#fff9;color:var(--wine)}
+    .scroll-note{margin-top:48px;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#9b8297}
+    .scroll-note span{display:block;font-size:1.4rem;margin-top:8px;animation:nudge 1.8s infinite}
+    @keyframes nudge{50%{transform:translateY(6px)}}
+    .ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;filter:blur(1px);opacity:.5;animation:drift 14s ease-in-out infinite}
+    .orb.one{width:180px;height:180px;background:#f1cbd8;top:18%;left:-75px}
+    .orb.two{width:115px;height:115px;background:#ead8eb;right:8%;top:18%;animation-delay:-4s}
+    .orb.three{width:220px;height:220px;background:#f6e1cf;right:-120px;bottom:8%;animation-delay:-8s}
+    @keyframes drift{50%{transform:translate(24px,-28px) scale(1.08)}}
+    .section{padding:105px 22px;position:relative}
+    .section-inner{max-width:1080px;margin:auto}
+    .section-head{text-align:center;max-width:660px;margin:0 auto 48px}
+    .section-head h2{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.1;font-weight:500;margin:13px 0;color:var(--plum)}
+    .section-head p{color:var(--muted);line-height:1.8}
+    .countdown-section{background:var(--ink);color:white;padding:76px 22px;position:relative;overflow:hidden}
+    .countdown-section:before{content:"";position:absolute;width:500px;height:500px;border:1px solid #ffffff14;border-radius:50%;left:-190px;top:-270px}
+    .countdown-section .eyebrow{color:var(--gold)}
+    .countdown-section h2{font-size:clamp(2rem,4vw,3rem);font-weight:500;margin:12px 0}
+    .countdown-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;max-width:610px;margin:32px auto 0}
+    .time-card{padding:22px 12px;border:1px solid #ffffff20;border-radius:18px;background:#ffffff0a;backdrop-filter:blur(8px)}
+    .time-card strong{display:block;font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:500;color:#f5d7df;font-variant-numeric:tabular-nums}
+    .time-card span{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:#cbb8ca}
+    #countdown-message{margin-top:24px;color:#ead5df}
+    .memory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .memory-card{position:relative;min-height:290px;border-radius:22px;overflow:hidden;background:linear-gradient(145deg,#f2d8df,#d8c7df);box-shadow:var(--shadow);isolation:isolate}
+    .memory-card:nth-child(2){background:linear-gradient(145deg,#e8d4c1,#d9b9ca)}
+    .memory-card:nth-child(3){background:linear-gradient(145deg,#d7c8df,#f3d4d9)}
+    .memory-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+    .memory-card:hover img{transform:scale(1.06)}
+    .memory-placeholder{position:absolute;inset:0;display:grid;place-items:center;font-size:3.5rem;color:#fff9}
+    .memory-caption{position:absolute;inset:auto 0 0;padding:45px 20px 19px;background:linear-gradient(transparent,#24152fbd);color:white}
+    .memory-caption strong{display:block;font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:500}
+    .memory-caption span{font-size:.78rem;color:#f7e8ef}
+    .memory-note{text-align:center;margin-top:18px;color:#8b7c8b;font-size:.8rem}
+    .letter-section{background:linear-gradient(145deg,#f5e8ed,#fff9f5 55%,#f0e4f0)}
+    .letter{max-width:760px;margin:auto;padding:clamp(28px,6vw,62px);border:1px solid #fff;background:#ffffffb8;box-shadow:var(--shadow);border-radius:8px 28px 8px 28px;position:relative}
+    .letter:before{content:"";position:absolute;inset:12px;border:1px solid #d9789126;border-radius:4px 20px 4px 20px;pointer-events:none}
+    .letter p{position:relative;color:#6f6071;line-height:2;font-size:1.02rem}
+    .letter .salutation{font-family:'Playfair Display',serif;color:var(--wine);font-size:1.65rem}
+    .signature{font-family:'Great Vibes',cursive;font-size:2.5rem;color:var(--wine);text-align:right;margin-top:24px}
+    .surprise-area{text-align:center}
+    .gift{border:0;background:none;font-size:7rem;filter:drop-shadow(0 15px 15px #713b6230);transition:transform .35s;animation:giftBob 3s ease-in-out infinite}
+    .gift:hover{transform:translateY(-8px) rotate(-5deg)}
+    @keyframes giftBob{50%{translate:0 -9px}}
+    .gift-message{max-width:640px;margin:26px auto 0;padding:30px;border-radius:24px;background:#fff;box-shadow:var(--shadow);opacity:0;transform:translateY(16px) scale(.98);transition:.6s;display:none}
+    .gift-message.show{display:block;opacity:1;transform:none}
+    .gift-message h3{font:500 2rem 'Playfair Display',serif;color:var(--wine)}
+    .gift-message p{color:var(--muted);line-height:1.85}
+    .bouquet-panel{display:grid;grid-template-columns:1fr 1.3fr;gap:26px;align-items:center;background:#fff;border-radius:28px;padding:clamp(22px,4vw,42px);box-shadow:var(--shadow)}
+    .flower-controls{display:flex;gap:10px;flex-wrap:wrap}
+    .flower-btn{width:54px;height:54px;border:1px solid #eadce7;border-radius:16px;background:#fff8fb;font-size:1.7rem;transition:.2s}
+    .flower-btn:hover{transform:translateY(-4px) rotate(-5deg);box-shadow:0 8px 18px #713b621a}
+    .bouquet-stage{height:310px;position:relative;border-radius:20px;background:radial-gradient(ellipse at 50% 80%,#f8e5ed,#fff8f5 68%);overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:36px}
+    .bouquet-stage:after{content:"";position:absolute;bottom:24px;width:140px;height:12px;border-radius:50%;background:#713b6218;filter:blur(7px)}
+    .flower{position:absolute;bottom:90px;font-size:2.5rem;transform-origin:50% 100%;animation:flowerGrow .55s cubic-bezier(.2,1.4,.4,1) both;filter:drop-shadow(0 5px 4px #713b621c)}
+    @keyframes flowerGrow{from{opacity:0;transform:translateY(45px) scale(.2) rotate(-20deg)}to{opacity:1;transform:translateY(0) scale(1) rotate(var(--rot))}}
+    .bouquet-ribbon{position:absolute;bottom:26px;z-index:2;font-size:2rem}
+    .guestbook{max-width:760px;margin:auto;background:#fff;padding:clamp(22px,4vw,38px);border-radius:26px;box-shadow:var(--shadow)}
+    .wish-form{display:flex;gap:10px}
+    .wish-form input{flex:1;min-width:0;padding:14px 16px;border:1px solid #e9dce7;border-radius:14px;outline:none;color:var(--ink)}
+    .wish-form input:focus{border-color:var(--rose);box-shadow:0 0 0 3px #d9789120}
+    .wish-form button{border:0;border-radius:14px;padding:0 20px;background:var(--wine);color:white}
+    .wishes{display:grid;gap:10px;margin-top:22px;max-height:300px;overflow:auto}
+    .wish{padding:14px 16px;background:#fff7fa;border-left:3px solid var(--rose);border-radius:5px 13px 13px 5px;color:#6e5c70;line-height:1.6;overflow-wrap:anywhere}
+    .wish small{display:block;color:#a28da1;font-size:.68rem;margin-top:5px}
+    .local-note{font-size:.75rem;color:#9a8b9a;margin-top:15px}
+    footer{padding:40px 20px;text-align:center;background:var(--ink);color:#e9dbe7}
+    footer .script{font-size:2rem;color:var(--pink)}
+    .reveal{opacity:0;transform:translateY(25px);transition:opacity .8s ease,transform .8s ease}
+    .reveal.visible{opacity:1;transform:none}
+    #sparkle-layer{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
+    .sparkle{position:absolute;animation:sparkleRise 1.8s ease-out forwards;font-size:1.2rem}
+    @keyframes sparkleRise{to{transform:translate(var(--dx),-130px) rotate(35deg) scale(1.4);opacity:0}}
+    .intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;padding:24px;background:radial-gradient(ellipse at 50% 35%,#684669,#24152f 72%);color:white;transition:opacity .9s,visibility .9s}
+    .intro.hide{opacity:0;visibility:hidden;pointer-events:none}
+    .intro-inner{max-width:540px}
+    .intro-flower{font-size:clamp(5rem,14vw,8rem);display:block;filter:drop-shadow(0 14px 28px #0005);animation:introFloat 3s ease-in-out infinite}
+    @keyframes introFloat{50%{transform:translateY(-12px) rotate(5deg)}}
+    .intro h2{font:500 clamp(2.5rem,7vw,4.5rem) 'Playfair Display',serif;margin:20px 0 10px}
+    .intro p{color:#e7d5e7;line-height:1.7}
+    .intro button{margin-top:22px;border:1px solid #ffffff55;background:#ffffff12;color:white;border-radius:99px;padding:14px 25px;backdrop-filter:blur(8px)}
+    .intro button:hover{background:#ffffff24}
+    @media(max-width:700px){.nav-links{display:none}.site-nav{padding:14px 18px}.brand{font-size:1.8rem}.section{padding:78px 18px}.memory-grid{grid-template-columns:1fr;max-width:430px;margin:auto}.memory-card{min-height:270px}.bouquet-panel{grid-template-columns:1fr}.bouquet-stage{height:260px}.countdown-grid{gap:7px}.time-card{padding:16px 6px}.wish-form{flex-direction:column}.wish-form button{padding:14px}.portrait-wrap{width:135px;height:135px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+  </style>
 </head>
-
-<body class="bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50 min-h-screen relative">
-
-<!-- ================= INTRO OVERLAY ================= -->
-<div id="intro-overlay">
-  <div id="intro-sparkles"></div>
-
-  <p class="font-script text-3xl md:text-4xl text-[--gold] mb-8 px-6 text-center">A little something for you, Staicy...</p>
-
-  <div class="relative flex items-center justify-center gap-16 md:gap-28" style="min-height:140px;">
-    <span id="bow">🏹</span>
-    <span id="flying-arrow">➳</span>
-    <span id="target-heart" class="pulse">❤️</span>
-  </div>
-
-  <p id="tap-hint" class="font-display italic text-lg md:text-xl mt-10">tap anywhere to release the arrow ✨</p>
-</div>
-
-<!-- Floating Balloons Background -->
-<div id="balloon-container" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
-
-<!-- ================= NAVBAR ================= -->
-<nav class="fixed top-0 w-full z-40 px-6 py-4 glass-card flex justify-between items-center">
-  <span class="font-script text-2xl md:text-3xl font-bold" style="color:var(--rose-deep)">Staicy Njoroge</span>
-  <div class="flex items-center gap-2">
-    <button id="music-toggle" title="Play / pause music" class="p-2.5 rounded-full glass-card hover:bg-white/50 transition text-lg">🎵</button>
-  </div>
-</nav>
-
-<!-- ================= HERO ================= -->
-<section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-24 relative reveal">
-  <span class="px-4 py-1.5 rounded-full text-sm font-semibold mb-6" style="background:var(--blush); color:var(--rose-deep)">
-    🎉 Turning 21 — Cheers to You!
-  </span>
-
-  <!-- 📸 Replace the src below with Staicy's photo URL -->
-  <div class="photo-frame mb-6">
-    <img src="https://placehold.co/400x400/FFD9E8/C2447A?text=Staicy" alt="Staicy">
-  </div>
-
-  <h1 class="text-5xl md:text-7xl font-display font-bold mb-4 py-2" style="color:var(--rose-deep)">
-    Happy 21st Birthday,<br class="hidden md:block"> Staicy!
-  </h1>
-  <p class="text-lg md:text-xl max-w-xl mb-10 leading-relaxed" style="color:var(--plum-soft)">
-    Twenty-one years of you lighting up every room. Here's to the woman you've become and everything beautiful still ahead. ✨
-  </p>
-
-  <!-- Countdown / Celebration Banner -->
-  <div id="countdown-wrap" class="grid grid-cols-4 gap-3 md:gap-6 w-full max-w-md mb-6">
-    <div class="glass-card p-3 md:p-4 rounded-2xl flex flex-col items-center">
-      <span id="days" class="text-2xl md:text-4xl font-bold" style="color:var(--rose-deep)">00</span>
-      <span class="text-xs uppercase tracking-wider" style="color:var(--plum-soft)">Days</span>
-    </div>
-    <div class="glass-card p-3 md:p-4 rounded-2xl flex flex-col items-center">
-      <span id="hours" class="text-2xl md:text-4xl font-bold" style="color:var(--rose)">00</span>
-      <span class="text-xs uppercase tracking-wider" style="color:var(--plum-soft)">Hours</span>
-    </div>
-    <div class="glass-card p-3 md:p-4 rounded-2xl flex flex-col items-center">
-      <span id="minutes" class="text-2xl md:text-4xl font-bold" style="color:#8a5a9e">00</span>
-      <span class="text-xs uppercase tracking-wider" style="color:var(--plum-soft)">Mins</span>
-    </div>
-    <div class="glass-card p-3 md:p-4 rounded-2xl flex flex-col items-center">
-      <span id="seconds" class="text-2xl md:text-4xl font-bold" style="color:var(--gold)">00</span>
-      <span class="text-xs uppercase tracking-wider" style="color:var(--plum-soft)">Secs</span>
+<body class="locked">
+  <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Birthday greeting">
+    <div class="intro-inner">
+      <span class="intro-flower" aria-hidden="true">💐</span>
+      <div class="eyebrow" style="color:#e7c58a">A little moment, just for you</div>
+      <h2>For you, Staicy</h2>
+      <p>Some people make the world feel a little softer and brighter. This little corner of the internet is all yours.</p>
+      <button id="open-gift">Open your birthday surprise <span aria-hidden="true">→</span></button>
     </div>
   </div>
-  <div id="celebration-banner" class="hidden glass-card px-8 py-5 rounded-2xl mb-6">
-    <p class="font-display text-2xl" style="color:var(--rose-deep)">🎂 It's finally here — happy 21st, Staicy! 🎂</p>
-  </div>
+  <div id="sparkle-layer" aria-hidden="true"></div>
+  <nav class="site-nav">
+    <a class="brand" href="#home">Staicy</a>
+    <div class="nav-links"><a href="#memories">Memories</a><a href="#letter">A letter</a><a href="#surprise">Surprise</a><a href="#wishes">Wishes</a></div>
+    <button class="music-btn" id="music-toggle" type="button" disabled title="Add a music file in the site settings to enable music">♫ Music</button>
+  </nav>
 
-  <div class="animate-bounce text-2xl mt-4" style="color:var(--rose)">↓</div>
-</section>
-
-<!-- ================= BOUQUET BUILDER ================= -->
-<section class="py-16 px-4 max-w-4xl mx-auto reveal">
-  <div class="glass-card rounded-3xl p-6 md:p-10 shadow-xl">
-    <h2 class="text-3xl font-display font-bold text-center mb-2" style="color:var(--rose-deep)">Build a Bouquet for Staicy 💐</h2>
-    <p class="text-center mb-8" style="color:var(--plum-soft)">Pick your favorite flowers to assemble a custom arrangement!</p>
-
-    <div class="flex flex-col md:flex-row gap-8 items-center">
-      <div class="flex md:flex-col gap-4 justify-center">
-        <button onclick="addFlower('🌹')" class="p-4 text-3xl glass-card rounded-2xl glow-hover">🌹</button>
-        <button onclick="addFlower('🌸')" class="p-4 text-3xl glass-card rounded-2xl glow-hover">🌸</button>
-        <button onclick="addFlower('🌻')" class="p-4 text-3xl glass-card rounded-2xl glow-hover">🌻</button>
-        <button onclick="addFlower('🌷')" class="p-4 text-3xl glass-card rounded-2xl glow-hover">🌷</button>
-        <button onclick="clearBouquet()" class="p-4 text-xs font-semibold glass-card rounded-2xl text-rose-500 hover:bg-rose-50">Reset</button>
+  <main>
+    <section class="hero" id="home">
+      <div class="ambient" aria-hidden="true"><i class="orb one"></i><i class="orb two"></i><i class="orb three"></i></div>
+      <div class="hero-content">
+        <span class="hero-kicker">✦ &nbsp; A celebration of you &nbsp; ✦</span>
+        <div class="portrait-wrap"><div class="portrait-inner"><span class="portrait-placeholder" id="portrait-placeholder" aria-hidden="true">🌷</span><img id="portrait" src="" alt="Staicy" hidden></div></div>
+        <div class="eyebrow">Today is all about you</div>
+        <h1 class="serif">Happy Birthday,<br><em>Staicy.</em></h1>
+        <p class="hero-copy">A new chapter, a thousand possibilities, and so many beautiful moments still waiting to find you. May this year feel as special as you are.</p>
+        <div class="hero-actions"><a class="primary-btn" href="#letter">Read your letter</a><a class="secondary-btn" href="#memories">Explore your day</a></div>
+        <div class="scroll-note">A little more below<span>⌄</span></div>
       </div>
+    </section>
 
-      <div id="bouquet-canvas" class="w-full h-80 rounded-2xl glass-card border-2 border-dashed relative flex justify-center items-end p-6 overflow-hidden" style="border-color:var(--blush)">
-        <div class="absolute bottom-2 text-4xl pointer-events-none">🎀</div>
+    <section class="countdown-section text-center" aria-labelledby="countdown-title">
+      <div class="section-inner" style="text-align:center;position:relative">
+        <div class="eyebrow">The next celebration</div>
+        <h2 class="serif" id="countdown-title">Counting down to another beautiful year</h2>
+        <p style="color:#cbb8ca">Every year deserves its own little magic.</p>
+        <div class="countdown-grid" id="countdown-grid">
+          <div class="time-card"><strong id="days">000</strong><span>Days</span></div>
+          <div class="time-card"><strong id="hours">00</strong><span>Hours</span></div>
+          <div class="time-card"><strong id="minutes">00</strong><span>Minutes</span></div>
+          <div class="time-card"><strong id="seconds">00</strong><span>Seconds</span></div>
+        </div>
+        <p id="countdown-message" aria-live="polite">Until August 15, 2027</p>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ================= GIFT UNBOXING ================= -->
-<section class="py-16 px-4 max-w-4xl mx-auto text-center reveal">
-  <h2 class="text-3xl font-display font-bold mb-2" style="color:var(--rose-deep)">A Special Surprise 🎁</h2>
-  <p class="mb-8" style="color:var(--plum-soft)">Click the box to unwrap your gift!</p>
-
-  <div class="relative inline-block my-8">
-    <div id="gift-box" onclick="revealSurprise()" class="gift-box text-8xl md:text-9xl select-none">🎁</div>
-  </div>
-
-  <div id="surprise-content" class="hidden glass-card p-8 rounded-3xl max-w-2xl mx-auto mt-6 transition-all duration-700 opacity-0 scale-95">
-    <h3 class="text-2xl font-bold font-display mb-4" style="color:var(--rose-deep)">Dear Staicy,</h3>
-    <p class="leading-relaxed mb-6" style="color:var(--plum-soft)">
-      Every moment spent with you brings light, laughter, and unmatched joy. Twenty-one looks incredible on you.
-      Here's to celebrating you today and every day after — may all your dreams unfold gracefully. Happy Birthday! ❤️
-    </p>
-    <p class="font-script text-2xl" style="color:var(--rose-deep)">— Beltah</p>
-  </div>
-</section>
-
-<!-- ================= PHOTO GALLERY ================= -->
-<section class="py-16 px-4 max-w-4xl mx-auto reveal">
-  <div class="glass-card rounded-3xl p-6 md:p-10">
-    <h2 class="text-3xl font-display font-bold text-center mb-8" style="color:var(--rose-deep)">Our Favorite Moments 📸</h2>
-    <!-- 📸 Replace these image URLs with your own photos of Staicy -->
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-      <img src="https://placehold.co/400x400/FFD9E8/C2447A?text=Memory+1" class="h-40 w-full object-cover rounded-xl glow-hover" alt="Memory 1">
-      <img src="https://placehold.co/400x400/F0C468/4A1942?text=Memory+2" class="h-40 w-full object-cover rounded-xl glow-hover" alt="Memory 2">
-      <img src="https://placehold.co/400x400/E85D8A/FFF8F3?text=Memory+3" class="h-40 w-full object-cover rounded-xl glow-hover" alt="Memory 3">
-    </div>
-  </div>
-</section>
-
-<!-- ================= GUESTBOOK ================= -->
-<section class="py-16 px-4 max-w-3xl mx-auto reveal">
-  <div class="glass-card rounded-3xl p-6 md:p-10">
-    <h2 class="text-3xl font-display font-bold text-center mb-6" style="color:var(--rose-deep)">Birthday Wall 📝</h2>
-
-    <form id="wish-form" onsubmit="addWish(event)" class="relative mb-8">
-      <div class="flex flex-col md:flex-row gap-4">
-        <input type="text" id="wish-input" required placeholder="Leave a birthday wish..." maxlength="240"
-          class="flex-grow px-5 py-3 rounded-2xl glass-card focus:outline-none focus:ring-2" style="--tw-ring-color:var(--rose)">
-        <button type="submit" class="px-6 py-3 text-white font-semibold rounded-2xl glow-hover" style="background:linear-gradient(90deg,var(--rose),var(--rose-deep))">
-          Send Wish ✨
-        </button>
+    <section class="section" id="memories">
+      <div class="section-inner">
+        <div class="section-head reveal"><div class="eyebrow">Little pieces of forever</div><h2 class="serif">Moments worth keeping</h2><p>Every photo tells a story. Add your favourite pictures to turn this little gallery into a collection of memories that are truly yours.</p></div>
+        <div class="memory-grid reveal">
+          <article class="memory-card"><div class="memory-placeholder">🌸</div><div class="memory-caption"><strong>The lovely little things</strong><span>A moment to remember</span></div></article>
+          <article class="memory-card"><div class="memory-placeholder">✨</div><div class="memory-caption"><strong>Golden memories</strong><span>All the joy in between</span></div></article>
+          <article class="memory-card"><div class="memory-placeholder">🌷</div><div class="memory-caption"><strong>Your brightest days</strong><span>More memories to come</span></div></article>
+        </div>
+        <p class="memory-note">Personal photos can be added in the image settings near the top of the JavaScript.</p>
       </div>
-    </form>
+    </section>
 
-    <div id="wishes-feed" class="space-y-4 max-h-80 overflow-y-auto pr-2"></div>
-  </div>
-</section>
+    <section class="section letter-section" id="letter">
+      <div class="section-inner">
+        <div class="section-head reveal"><div class="eyebrow">A note from the heart</div><h2 class="serif">A little letter for you</h2></div>
+        <article class="letter reveal">
+          <p class="salutation">Dear Staicy,</p>
+          <p>Today is a reminder of how much beauty one person can bring into the world. I hope you never stop believing in the wonderful things ahead of you, never shrink your dreams, and always make room for the little moments that make life feel magical.</p>
+          <p>May this new year bring you genuine happiness, brave adventures, peaceful days, unexpected blessings, and people who make you feel appreciated. Keep becoming everything you dream of being. The best chapters are still being written.</p>
+          <p>Enjoy every second of your special day. You deserve to feel celebrated, today and always.</p>
+          <div class="signature">With love, Beltah</div>
+        </article>
+      </div>
+    </section>
 
-<!-- ================= FOOTER ================= -->
-<footer class="py-8 text-center border-t" style="border-color:rgba(74,25,66,0.1)">
-  <p class="text-sm font-script text-xl" style="color:var(--rose)">Made with love, for you. — Beltah</p>
-</footer>
+    <section class="section" id="bouquet">
+      <div class="section-inner">
+        <div class="section-head reveal"><div class="eyebrow">Picked just for you</div><h2 class="serif">A bouquet made with love</h2><p>Choose a few flowers and build a little arrangement for Staicy.</p></div>
+        <div class="bouquet-panel reveal">
+          <div><h3 class="serif" style="font-size:1.6rem;font-weight:500">Choose your flowers</h3><p style="color:var(--muted);line-height:1.7">Tap a flower to add it to the bouquet. There is no wrong combination.</p><div class="flower-controls"><button class="flower-btn" data-flower="🌹" aria-label="Add rose">🌹</button><button class="flower-btn" data-flower="🌷" aria-label="Add tulip">🌷</button><button class="flower-btn" data-flower="🌸" aria-label="Add blossom">🌸</button><button class="flower-btn" data-flower="🌻" aria-label="Add sunflower">🌻</button><button class="flower-btn" data-flower="💮" aria-label="Add flower">💮</button><button class="pill-btn" id="clear-bouquet" type="button">Clear</button></div></div>
+          <div class="bouquet-stage" id="bouquet-stage" aria-label="Your flower bouquet"><div class="bouquet-ribbon">🎀</div></div>
+        </div>
+      </div>
+    </section>
 
-<!-- Hidden YouTube music player -->
-<div id="yt-player" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none;"></div>
+    <section class="section" id="surprise">
+      <div class="section-inner surprise-area reveal">
+        <div class="section-head"><div class="eyebrow">One more little thing</div><h2 class="serif">There's a surprise waiting</h2><p>Go on, open it. You know you want to.</p></div>
+        <button class="gift" id="gift-button" type="button" aria-label="Open the birthday gift">🎁</button>
+        <div class="gift-message" id="gift-message" aria-live="polite"><h3>For a year full of magic</h3><p>May every wish you make find its way to you. May laughter come easily, love find you often, and may you always remember how wonderfully one-of-a-kind you are. Happy Birthday, Staicy!</p><div class="signature">— Beltah</div></div>
+      </div>
+    </section>
 
-<script>
-  /* ============================================================
-     CONFIG — edit these two values
-     ============================================================ */
-  // 🎂 Set the exact date/time of her 21st birthday (local time):
-  const TARGET_BIRTHDAY = new Date('2026-08-15T00:00:00');
+    <section class="section letter-section" id="wishes">
+      <div class="section-inner">
+        <div class="section-head reveal"><div class="eyebrow">Leave a little love</div><h2 class="serif">The birthday wishes wall</h2><p>Leave a kind message for Staicy. It will appear here on this device.</p></div>
+        <div class="guestbook reveal">
+          <form class="wish-form" id="wish-form"><input id="wish-input" maxlength="240" required placeholder="Write a birthday wish…" aria-label="Your birthday wish"><button type="submit">Send wish ✦</button></form>
+          <div class="wishes" id="wishes-feed" aria-live="polite"></div>
+          <p class="local-note">Note: wishes are saved only in this browser. A shared guestbook needs a database or form service.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  // 🎵 Paste the YouTube VIDEO ID (the part after v= in the URL):
-  const YOUTUBE_VIDEO_ID = 'PASTE_YOUTUBE_VIDEO_ID_HERE';
-  /* ============================================================ */
+  <footer><div class="script">Made with love, for Staicy</div><p style="font-size:.75rem;color:#b9a8bb">A little birthday universe by Beltah · 2027</p></footer>
+  <audio id="birthday-audio" loop preload="none"></audio>
 
-  // ---------- Floating background balloons ----------
-  const balloonColors = ['#FFD9E8', '#E85D8A', '#F0C468', '#E6E6FA'];
-  const balloonContainer = document.getElementById('balloon-container');
-  for (let i = 0; i < 12; i++) {
-    const b = document.createElement('div');
-    b.className = 'balloon';
-    b.style.left = `${Math.random() * 100}%`;
-    b.style.width = `${40 + Math.random() * 30}px`;
-    b.style.height = `${50 + Math.random() * 35}px`;
-    b.style.backgroundColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
-    b.style.animationDelay = `${Math.random() * 12}s`;
-    balloonContainer.appendChild(b);
-  }
+  <script>
+    /* PERSONALISE THESE SETTINGS BEFORE PUBLISHING */
+    const SETTINGS = {
+      birthday: '2027-08-15T00:00:00',
+      portrait: '', // Add a photo URL, e.g. './images/staicy.jpg'
+      memories: ['', '', ''], // Add three photo URLs, e.g. './images/memory-1.jpg'
+      music: '' // Add a licensed MP3 URL, e.g. './music/birthday-song.mp3'
+    };
 
-  // ---------- Intro sparkles ----------
-  const sparkleWrap = document.getElementById('intro-sparkles');
-  for (let i = 0; i < 20; i++) {
-    const s = document.createElement('span');
-    s.className = 'intro-sparkle';
-    s.innerText = '✦';
-    s.style.left = `${Math.random() * 100}%`;
-    s.style.top = `${Math.random() * 100}%`;
-    s.style.fontSize = `${8 + Math.random() * 14}px`;
-    s.style.animationDelay = `${Math.random() * 2.4}s`;
-    sparkleWrap.appendChild(s);
-  }
-
-  // ---------- Scroll reveal ----------
-  const revealEls = document.querySelectorAll('.reveal');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('in-view');
+    const $ = (selector) => document.querySelector(selector);
+    const intro = $('#intro');
+    $('#open-gift').addEventListener('click', () => {
+      intro.classList.add('hide');
+      document.body.classList.remove('locked');
+      burst(window.innerWidth / 2, window.innerHeight / 2, 22);
+      setTimeout(() => intro.remove(), 1000);
     });
-  }, { threshold: 0.15 });
-  revealEls.forEach(el => io.observe(el));
 
-  // ---------- Countdown to her 21st birthday ----------
-  function updateTimer() {
-    const now = new Date();
-    const diff = TARGET_BIRTHDAY - now;
-    if (diff <= 0) {
-      document.getElementById('countdown-wrap').classList.add('hidden');
-      document.getElementById('celebration-banner').classList.remove('hidden');
-      return;
-    }
-    document.getElementById('days').innerText = String(Math.floor(diff / 86400000)).padStart(2, '0');
-    document.getElementById('hours').innerText = String(Math.floor((diff / 3600000) % 24)).padStart(2, '0');
-    document.getElementById('minutes').innerText = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
-    document.getElementById('seconds').innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
-  }
-  setInterval(updateTimer, 1000);
-  updateTimer();
-
-  // ---------- Bouquet generator ----------
-  const canvas = document.getElementById('bouquet-canvas');
-  function addFlower(emoji) {
-    const el = document.createElement('span');
-    el.className = 'absolute text-4xl transition-all duration-300 animate-bounce';
-    el.innerText = emoji;
-    const left = 35 + (Math.random() * 30);
-    const bottom = 40 + (Math.random() * 100);
-    const rotate = -30 + (Math.random() * 60);
-    el.style.left = `${left}%`;
-    el.style.bottom = `${bottom}px`;
-    el.style.transform = `rotate(${rotate}deg)`;
-    canvas.appendChild(el);
-  }
-  function clearBouquet() {
-    canvas.innerHTML = '<div class="absolute bottom-2 text-4xl pointer-events-none">🎀</div>';
-  }
-
-  // ---------- Gift unboxing ----------
-  function revealSurprise() {
-    const box = document.getElementById('gift-box');
-    const surprise = document.getElementById('surprise-content');
-    confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-    box.classList.add('lid-open');
-    setTimeout(() => {
-      box.style.display = 'none';
-      surprise.classList.remove('hidden');
-      setTimeout(() => surprise.classList.remove('opacity-0', 'scale-95'), 50);
-    }, 600);
-  }
-
-  // ---------- Guestbook (persisted in this browser via localStorage) ----------
-  const WISH_KEY = 'staicy_birthday_wishes';
-  const feed = document.getElementById('wishes-feed');
-
-  function loadWishes() {
-    let wishes = [];
-    try {
-      wishes = JSON.parse(localStorage.getItem(WISH_KEY) || '[]');
-    } catch (e) { wishes = []; }
-    if (wishes.length === 0) {
-      wishes = ['Wishing you the absolute best day ever! 🥳'];
-    }
-    feed.innerHTML = '';
-    wishes.forEach(text => renderWish(text, false));
-  }
-
-  function renderWish(text, prepend) {
-    const card = document.createElement('div');
-    card.className = 'p-4 rounded-2xl glass-card border-l-4';
-    card.style.borderColor = 'var(--rose)';
-    const p = document.createElement('p');
-    p.className = 'text-sm';
-    p.style.color = 'var(--plum-soft)';
-    p.textContent = `"${text}"`;
-    card.appendChild(p);
-    if (prepend) feed.prepend(card); else feed.appendChild(card);
-  }
-
-  function saveWish(text) {
-    let wishes = [];
-    try {
-      wishes = JSON.parse(localStorage.getItem(WISH_KEY) || '[]');
-    } catch (e) { wishes = []; }
-    wishes.unshift(text);
-    try {
-      localStorage.setItem(WISH_KEY, JSON.stringify(wishes));
-    } catch (e) { /* storage unavailable, wish still shows for this session */ }
-  }
-
-  function addWish(e) {
-    e.preventDefault();
-    const input = document.getElementById('wish-input');
-    if (!input.value.trim()) return;
-    const text = input.value.trim();
-    renderWish(text, true);
-    saveWish(text);
-
-    const emojis = ['💖', '✨', '🎈', '🎉', '🌸'];
-    for (let i = 0; i < 5; i++) {
-      const floating = document.createElement('div');
-      floating.className = 'floating-emoji';
-      floating.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      floating.style.left = `${e.clientX - 20 + (Math.random() * 40)}px`;
-      floating.style.top = `${e.clientY - 20}px`;
-      document.body.appendChild(floating);
-      setTimeout(() => floating.remove(), 2400);
-    }
-    input.value = '';
-  }
-  loadWishes();
-
-  // ---------- YouTube background music ----------
-  let ytPlayer = null;
-  let musicReady = false;
-  let musicPlaying = false;
-
-  function loadYouTubeAPI() {
-    if (!YOUTUBE_VIDEO_ID || YOUTUBE_VIDEO_ID === 'PASTE_YOUTUBE_VIDEO_ID_HERE') return;
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(tag);
-  }
-  window.onYouTubeIframeAPIReady = function () {
-    ytPlayer = new YT.Player('yt-player', {
-      videoId: YOUTUBE_VIDEO_ID,
-      playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: YOUTUBE_VIDEO_ID },
-      events: {
-        onReady: () => { musicReady = true; }
+    // A real-time countdown to the next birthday (local device time).
+    const targetDate = new Date(SETTINGS.birthday);
+    function updateCountdown() {
+      const now = new Date();
+      let diff = targetDate - now;
+      if (!Number.isFinite(diff)) return;
+      if (diff <= 0) {
+        $('#countdown-grid').hidden = true;
+        $('#countdown-message').textContent = 'Today is your day, Staicy. Happy Birthday!';
+        return;
       }
+      const day = Math.floor(diff / 86400000);
+      diff %= 86400000;
+      $('#days').textContent = String(day).padStart(3, '0');
+      $('#hours').textContent = String(Math.floor(diff / 3600000)).padStart(2, '0');
+      diff %= 3600000;
+      $('#minutes').textContent = String(Math.floor(diff / 60000)).padStart(2, '0');
+      diff %= 60000;
+      $('#seconds').textContent = String(Math.floor(diff / 1000)).padStart(2, '0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Add personal images when supplied. No stock photo is presented as Staicy.
+    if (SETTINGS.portrait) {
+      $('#portrait').src = SETTINGS.portrait;
+      $('#portrait').hidden = false;
+      $('#portrait-placeholder').hidden = true;
+    }
+    document.querySelectorAll('.memory-card').forEach((card, index) => {
+      if (!SETTINGS.memories[index]) return;
+      const img = document.createElement('img');
+      img.src = SETTINGS.memories[index];
+      img.alt = ['A favourite memory', 'A golden memory', 'A happy moment'][index];
+      img.loading = 'lazy';
+      card.prepend(img);
+      card.querySelector('.memory-placeholder').hidden = true;
     });
-  };
-  loadYouTubeAPI();
 
-  function toggleMusic() {
-    if (!musicReady || !ytPlayer) return;
-    const btn = document.getElementById('music-toggle');
-    if (musicPlaying) {
-      ytPlayer.pauseVideo();
-      btn.classList.remove('spin');
-      btn.innerText = '🎵';
-    } else {
-      ytPlayer.playVideo();
-      btn.classList.add('spin');
-      btn.innerText = '🎶';
-    }
-    musicPlaying = !musicPlaying;
-  }
-  document.getElementById('music-toggle').addEventListener('click', toggleMusic);
+    // Gentle reveal as each section enters the viewport.
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.12});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-  // ---------- Intro sequence: bow → arrow → heart burst ----------
-  const overlay = document.getElementById('intro-overlay');
-  const bow = document.getElementById('bow');
-  const heart = document.getElementById('target-heart');
-  const arrow = document.getElementById('flying-arrow');
-  const tapHint = document.getElementById('tap-hint');
-  let introFired = false;
+    // Build a bouquet with a small, natural stagger.
+    const stage = $('#bouquet-stage');
+    let flowerCount = 0;
+    document.querySelectorAll('[data-flower]').forEach(button => {
+      button.addEventListener('click', () => {
+        if (flowerCount >= 18) return;
+        const flower = document.createElement('span');
+        flower.className = 'flower';
+        flower.textContent = button.dataset.flower;
+        const x = 22 + Math.random() * 56;
+        const y = 75 + Math.random() * 95;
+        flower.style.left = x + '%';
+        flower.style.bottom = y + 'px';
+        flower.style.setProperty('--rot', (-24 + Math.random() * 48) + 'deg');
+        flower.style.animationDelay = (Math.random() * .12) + 's';
+        stage.appendChild(flower);
+        flowerCount++;
+      });
+    });
+    $('#clear-bouquet').addEventListener('click', () => {
+      stage.querySelectorAll('.flower').forEach(flower => flower.remove());
+      flowerCount = 0;
+    });
 
-  function spawnRibbons(originX, originY) {
-    const colors = ['#E85D8A', '#F0C468', '#FFD9E8', '#6E2C63'];
-    for (let i = 0; i < 24; i++) {
-      const rb = document.createElement('div');
-      rb.className = 'ribbon';
-      const angle = (Math.PI * 2 * i) / 24 + Math.random() * 0.3;
-      const dist = 120 + Math.random() * 160;
-      const height = 28 + Math.random() * 30;
-      rb.style.left = `${originX}px`;
-      rb.style.top = `${originY}px`;
-      rb.style.height = `${height}px`;
-      rb.style.background = colors[i % colors.length];
-      rb.style.setProperty('--rx', `${Math.cos(angle) * dist}px`);
-      rb.style.setProperty('--ry', `${Math.sin(angle) * dist}px`);
-      rb.style.setProperty('--rr', `${Math.random() * 360}deg`);
-      overlay.appendChild(rb);
-      setTimeout(() => rb.remove(), 1400);
-    }
-  }
-
-  function startIntro() {
-    if (introFired) return;
-    introFired = true;
-    tapHint.style.opacity = '0';
-
-    // Draw the bow
-    overlay.classList.add('drawn');
-    heart.classList.remove('pulse');
-
-    // Fly the arrow toward the heart
-    const heartRect = heart.getBoundingClientRect();
-    const bowRect = bow.getBoundingClientRect();
-    const distance = heartRect.left - bowRect.right + 20;
-    arrow.style.setProperty('--fly-distance', `${distance}px`);
-    arrow.style.left = `${bowRect.right - 10}px`;
-    arrow.style.top = `${bowRect.top + bowRect.height / 2 - 12}px`;
-    arrow.classList.add('fly');
-
-    setTimeout(() => {
-      // Heart gets hit and pops
-      heart.classList.add('hit');
-      const rect = heart.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-
-      spawnRibbons(cx, cy);
-
-      // Fireworks via canvas-confetti
-      confetti({ particleCount: 90, spread: 100, startVelocity: 45, origin: { x: cx / window.innerWidth, y: cy / window.innerHeight } });
-      setTimeout(() => {
-        confetti({ particleCount: 70, spread: 120, angle: 60, origin: { x: 0.1, y: 0.5 } });
-        confetti({ particleCount: 70, spread: 120, angle: 120, origin: { x: 0.9, y: 0.5 } });
-      }, 250);
-      setTimeout(() => {
-        confetti({ particleCount: 100, spread: 160, startVelocity: 55, origin: { x: 0.5, y: 0.3 } });
-      }, 500);
-
-      // Start music on this same user gesture (satisfies autoplay policies)
-      if (musicReady && ytPlayer && !musicPlaying) {
-        toggleMusic();
+    // Gift reveal and lightweight canvas-free sparkle burst.
+    let giftOpened = false;
+    $('#gift-button').addEventListener('click', () => {
+      if (giftOpened) return;
+      giftOpened = true;
+      $('#gift-button').textContent = '💝';
+      $('#gift-message').classList.add('show');
+      burst(window.innerWidth / 2, window.innerHeight * .58, 34);
+    });
+    function burst(x, y, amount) {
+      const layer = $('#sparkle-layer');
+      const symbols = ['✦', '♥', '✧', '❀', '·'];
+      for (let i = 0; i < amount; i++) {
+        const node = document.createElement('span');
+        node.className = 'sparkle';
+        node.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        node.style.left = x + (Math.random() - .5) * 150 + 'px';
+        node.style.top = y + (Math.random() - .5) * 70 + 'px';
+        node.style.color = ['#d97891', '#e7c58a', '#9b6d9b', '#fff'][i % 4];
+        node.style.setProperty('--dx', (Math.random() - .5) * 150 + 'px');
+        layer.appendChild(node);
+        setTimeout(() => node.remove(), 1900);
       }
+    }
 
-      // Reveal the page
-      setTimeout(() => {
-        overlay.classList.add('hide');
-        document.body.style.overflow = 'auto';
-      }, 900);
-    }, 500);
-  }
+    // Local-only guestbook. Use a hosted database for cross-device sharing.
+    const WISH_KEY = 'staicy-birthday-wishes-v2';
+    function getWishes() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(WISH_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed.slice(0, 40) : [];
+      } catch { return []; }
+    }
+    function renderWishes() {
+      const feed = $('#wishes-feed');
+      feed.replaceChildren();
+      getWishes().forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'wish';
+        const message = document.createElement('div');
+        message.textContent = item.message;
+        const date = document.createElement('small');
+        date.textContent = new Date(item.date).toLocaleString();
+        card.append(message, date);
+        feed.appendChild(card);
+      });
+      if (!feed.children.length) {
+        const empty = document.createElement('p');
+        empty.className = 'local-note';
+        empty.textContent = 'Your first birthday wish can go right here.';
+        feed.appendChild(empty);
+      }
+    }
+    $('#wish-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const input = $('#wish-input');
+      const message = input.value.trim();
+      if (!message) return;
+      const wishes = getWishes();
+      wishes.unshift({message, date: new Date().toISOString()});
+      try { localStorage.setItem(WISH_KEY, JSON.stringify(wishes.slice(0, 40))); } catch {}
+      input.value = '';
+      renderWishes();
+      burst(window.innerWidth / 2, window.innerHeight * .7, 10);
+    });
+    renderWishes();
 
-  document.body.style.overflow = 'hidden';
-  overlay.addEventListener('click', startIntro);
-  overlay.addEventListener('touchstart', startIntro, { passive: true });
-</script>
+    // Optional music: browser autoplay is never forced.
+    const audio = $('#birthday-audio');
+    const musicButton = $('#music-toggle');
+    if (SETTINGS.music) {
+      audio.src = SETTINGS.music;
+      musicButton.disabled = false;
+      musicButton.title = 'Play or pause birthday music';
+      musicButton.addEventListener('click', async () => {
+        try {
+          if (audio.paused) { await audio.play(); musicButton.textContent = '♫ Playing'; }
+          else { audio.pause(); musicButton.textContent = '♫ Music'; }
+        } catch { musicButton.textContent = 'Music unavailable'; }
+      });
+    }
+  </script>
 </body>
 </html>
